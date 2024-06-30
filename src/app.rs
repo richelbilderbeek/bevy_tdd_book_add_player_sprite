@@ -3,23 +3,43 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Player;
 
-#[macro_use]
-extern crate partial_application;
-
-pub fn create_app(initial_player_position: Option<Vec3>) -> App {
+pub fn create_app(initial_player_position: Vec3) -> App {
     let mut app = App::new();
-    let f = partial!(add_player_with_sprite => _, initial_player_position);
-    app.add_systems(Startup, f);
-    app.update();
+    let add_player_fn =
+        move |commands: Commands| add_player_with_sprite_at_pos(commands, initial_player_position);
+    app.add_systems(Startup, add_player_fn);
+
+    // Do not do update, as this will disallow to do more steps
+    // app.update(); //Don't!
     return app;
 }
 
+#[cfg(test)]
 fn add_player(mut commands: Commands) {
     commands.spawn(Player);
 }
 
-fn add_player_with_sprite(mut commands: Commands, initial_player_position: Option<Vec3>) {
+#[cfg(test)]
+fn add_player_with_sprite(mut commands: Commands) {
     commands.spawn((SpriteBundle { ..default() }, Player));
+}
+
+fn add_player_with_sprite_at_pos(mut commands: Commands, initial_player_position: Vec3) {
+    commands.spawn((
+        SpriteBundle {
+            transform: Transform {
+                translation: initial_player_position,
+                scale: Vec3::new(100.0, 20.0, 1.0),
+                ..default()
+            },
+            sprite: Sprite {
+                color: Color::ORANGE,
+                ..default()
+            },
+            ..default()
+        },
+        Player,
+    ));
 }
 
 #[cfg(test)]
@@ -39,6 +59,13 @@ fn get_player_coordinat(app: &mut App) -> Vec3 {
     let mut query = app.world.query::<(&Transform, &Player)>();
     let (transform, _) = query.single(&app.world);
     return transform.translation;
+}
+
+#[cfg(test)]
+fn get_player_scale(app: &mut App) -> Vec3 {
+    let mut query = app.world.query::<(&Transform, &Player)>();
+    let (transform, _) = query.single(&app.world);
+    return transform.scale;
 }
 
 #[cfg(test)]
@@ -70,7 +97,7 @@ mod tests {
 
     #[test]
     fn test_can_create_app() {
-        create_app();
+        create_app(Vec3::new(0.0, 0.0, 0.0));
     }
 
     #[test]
@@ -90,13 +117,15 @@ mod tests {
 
     #[test]
     fn test_create_app_has_a_player() {
-        let app = create_app();
+        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        app.update();
         assert_eq!(count_n_players(&app), 1);
     }
 
     #[test]
     fn test_player_is_at_origin() {
-        let mut app = create_app();
+        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        app.update();
         assert_eq!(get_player_coordinat(&mut app), Vec3::new(0.0, 0.0, 0.0));
     }
 
@@ -104,26 +133,37 @@ mod tests {
     fn test_player_is_at_custom_place() {
         let initial_coordinat = Vec3::new(1.2, 3.4, 5.6);
         let mut app = create_app(initial_coordinat);
+        app.update();
         assert_eq!(get_player_coordinat(&mut app), initial_coordinat);
     }
 
     #[test]
+    fn test_player_has_a_scale() {
+        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        app.update();
+        assert_eq!(get_player_scale(&mut app), Vec3::new(100.0, 20.0, 1.0));
+    }
+
+    #[test]
     fn test_get_all_components_names_for_empty_app() {
-        let app = App::new();
+        let mut app = App::new();
+        app.update();
         let v = get_all_components_names(&app);
-        assert_eq!(v.len(), 5);
+        assert_eq!(v.len(), 7);
     }
 
     #[test]
     fn test_get_all_components_names_for_our_app() {
-        let app = create_app();
+        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        app.update();
         let v = get_all_components_names(&app);
-        assert_eq!(v.len(), 8);
+        assert_eq!(v.len(), 15);
     }
 
     #[test]
     fn test_print_names_of_empty_app() {
-        let app = App::new();
+        let mut app = App::new();
+        app.update();
         print_all_components_names(&app);
         /*
         bevy_ecs::schedule::schedule::Schedules
