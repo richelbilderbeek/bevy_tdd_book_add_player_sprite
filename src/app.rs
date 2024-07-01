@@ -30,20 +30,6 @@ fn add_player_with_sprite(mut commands: Commands) {
     commands.spawn((SpriteBundle { ..default() }, Player));
 }
 
-#[allow(dead_code)]
-fn add_player_with_sprite_at_pos(mut commands: Commands, initial_player_position: Vec3) {
-    commands.spawn((
-        SpriteBundle {
-            transform: Transform {
-                translation: initial_player_position,
-                ..default()
-            },
-            ..default()
-        },
-        Player,
-    ));
-}
-
 fn add_player_with_sprite_at_pos_with_scale(
     mut commands: Commands,
     initial_player_position: Vec3,
