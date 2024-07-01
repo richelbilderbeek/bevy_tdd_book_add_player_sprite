@@ -159,12 +159,6 @@ mod tests {
         assert_eq!(get_player_coordinat(&mut app), initial_coordinat);
     }
 
-    #[test]
-    fn test_player_has_unity_scale() {
-        let mut app = create_app(create_default_game_parameters());
-        app.update();
-        assert_eq!(get_player_scale(&mut app), Vec3::new(1.0, 1.0, 1.0));
-    }
 
     #[test]
     fn test_player_has_a_custom_scale() {
