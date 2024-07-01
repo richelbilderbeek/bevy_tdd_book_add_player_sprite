@@ -1,12 +1,18 @@
+use crate::game_parameters::*;
 use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct Player;
 
-pub fn create_app(initial_player_position: Vec3) -> App {
+pub fn create_app(game_parameters: GameParameters) -> App {
     let mut app = App::new();
-    let add_player_fn =
-        move |commands: Commands| add_player_with_sprite_at_pos(commands, initial_player_position);
+    let add_player_fn = move |/* no mut? */ commands: Commands| {
+        add_player_with_sprite_at_pos_with_scale(
+            commands,
+            game_parameters.initial_player_position,
+            game_parameters.initial_player_scale,
+        );
+    };
     app.add_systems(Startup, add_player_fn);
 
     // Do not do update, as this will disallow to do more steps
@@ -24,16 +30,30 @@ fn add_player_with_sprite(mut commands: Commands) {
     commands.spawn((SpriteBundle { ..default() }, Player));
 }
 
+#[allow(dead_code)]
 fn add_player_with_sprite_at_pos(mut commands: Commands, initial_player_position: Vec3) {
     commands.spawn((
         SpriteBundle {
             transform: Transform {
                 translation: initial_player_position,
-                scale: Vec3::new(100.0, 20.0, 1.0),
                 ..default()
             },
-            sprite: Sprite {
-                color: Color::ORANGE,
+            ..default()
+        },
+        Player,
+    ));
+}
+
+fn add_player_with_sprite_at_pos_with_scale(
+    mut commands: Commands,
+    initial_player_position: Vec3,
+    initial_player_scale: Vec3,
+) {
+    commands.spawn((
+        SpriteBundle {
+            transform: Transform {
+                translation: initial_player_position,
+                scale: initial_player_scale,
                 ..default()
             },
             ..default()
@@ -97,7 +117,7 @@ mod tests {
 
     #[test]
     fn test_can_create_app() {
-        create_app(Vec3::new(0.0, 0.0, 0.0));
+        create_app(create_default_game_parameters());
     }
 
     #[test]
@@ -117,14 +137,14 @@ mod tests {
 
     #[test]
     fn test_create_app_has_a_player() {
-        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        let mut app = create_app(create_default_game_parameters());
         app.update();
         assert_eq!(count_n_players(&app), 1);
     }
 
     #[test]
     fn test_player_is_at_origin() {
-        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        let mut app = create_app(create_default_game_parameters());
         app.update();
         assert_eq!(get_player_coordinat(&mut app), Vec3::new(0.0, 0.0, 0.0));
     }
@@ -132,16 +152,28 @@ mod tests {
     #[test]
     fn test_player_is_at_custom_place() {
         let initial_coordinat = Vec3::new(1.2, 3.4, 5.6);
-        let mut app = create_app(initial_coordinat);
+        let mut game_parameters = create_default_game_parameters();
+        game_parameters.initial_player_position = initial_coordinat;
+        let mut app = create_app(game_parameters);
         app.update();
         assert_eq!(get_player_coordinat(&mut app), initial_coordinat);
     }
 
     #[test]
-    fn test_player_has_a_scale() {
-        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+    fn test_player_has_unity_scale() {
+        let mut app = create_app(create_default_game_parameters());
         app.update();
-        assert_eq!(get_player_scale(&mut app), Vec3::new(100.0, 20.0, 1.0));
+        assert_eq!(get_player_scale(&mut app), Vec3::new(1.0, 1.0, 1.0));
+    }
+
+    #[test]
+    fn test_player_has_a_custom_scale() {
+        let player_scale = Vec3::new(1.1, 2.2, 3.3);
+        let mut game_parameters = create_default_game_parameters();
+        game_parameters.initial_player_scale = player_scale;
+        let mut app = create_app(game_parameters);
+        app.update();
+        assert_eq!(get_player_scale(&mut app), player_scale);
     }
 
     #[test]
@@ -154,7 +186,7 @@ mod tests {
 
     #[test]
     fn test_get_all_components_names_for_our_app() {
-        let mut app = create_app(Vec3::new(0.0, 0.0, 0.0));
+        let mut app = create_app(create_default_game_parameters());
         app.update();
         let v = get_all_components_names(&app);
         assert_eq!(v.len(), 15);
