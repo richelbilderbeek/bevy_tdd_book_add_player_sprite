@@ -70,7 +70,6 @@ Filename                                  |Descriptions
 [.markdownlint.jsonc](.markdownlint.jsonc)|Configuration of the markdown linter, use `markdownlint "**/*.md"` to do markdown linting locally. The name of this file is a default name.
 [.markdownlintignore](.markdownlintignore)|Files ignored by the markdown linter, use `markdownlint "**/*.md"` to do markdown linting locally. The name of this file is a default name.
 
-
 ## References
 
 * [Bevy setup](https://bevyengine.org/learn/quick-start/getting-started/setup/)
