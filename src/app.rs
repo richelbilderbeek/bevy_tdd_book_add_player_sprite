@@ -17,7 +17,7 @@ pub fn create_app(game_parameters: GameParameters) -> App {
 
     // Do not do update, as this will disallow to do more steps
     // app.update(); //Don't!
-    return app;
+    app
 }
 
 #[cfg(test)]
@@ -57,21 +57,21 @@ fn count_n_players(app: &App) -> usize {
             n += 1;
         }
     }
-    return n;
+    n
 }
 
 #[cfg(test)]
 fn get_player_coordinat(app: &mut App) -> Vec3 {
     let mut query = app.world.query::<(&Transform, &Player)>();
     let (transform, _) = query.single(&app.world);
-    return transform.translation;
+    transform.translation
 }
 
 #[cfg(test)]
 fn get_player_scale(app: &mut App) -> Vec3 {
     let mut query = app.world.query::<(&Transform, &Player)>();
     let (transform, _) = query.single(&app.world);
-    return transform.scale;
+    transform.scale
 }
 
 #[cfg(test)]
@@ -82,7 +82,7 @@ fn get_all_components_names(app: &App) -> Vec<String> {
     for c in app.world.components().iter() {
         v.push(String::from_str(c.name()).unwrap());
     }
-    return v;
+    v
 }
 
 #[cfg(test)]
