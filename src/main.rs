@@ -1,11 +1,11 @@
 use crate::app::*;
-use crate::game_parameters::*;
 use bevy::prelude::*;
 mod app;
-mod game_parameters;
 
 fn main() {
-    let mut app = create_app(create_default_game_parameters());
+    let initial_player_position = Vec2::new(0.0, 0.0);
+    let initial_player_scale = Vec2::new(64.0, 32.0);
+    let mut app = create_app(initial_player_position, initial_player_scale);
     let add_camera_fun = |mut commands: Commands| {
         commands.spawn(Camera2dBundle::default());
     };
