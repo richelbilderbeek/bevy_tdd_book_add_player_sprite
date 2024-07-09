@@ -36,7 +36,7 @@ fn count_n_players(app: &mut App) -> usize {
 }
 
 #[cfg(test)]
-fn get_player_coordinat(app: &mut App) -> Vec2 {
+fn get_player_position(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
     transform.translation.xy()
@@ -54,17 +54,18 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_empty_app_has_no_players() {
+        let mut app = App::new();
+        assert_eq!(count_n_players(&mut app), 0);
+    }
+
+    #[test]
     fn test_can_create_app() {
         let initial_player_position = Vec2::new(0.0, 0.0);
         let initial_player_scale = Vec2::new(64.0, 32.0);
         create_app(initial_player_position, initial_player_scale);
     }
 
-    #[test]
-    fn test_empty_app_has_no_players() {
-        let mut app = App::new();
-        assert_eq!(count_n_players(&mut app), 0);
-    }
 
     #[test]
     fn test_create_app_has_a_player() {
@@ -76,12 +77,12 @@ mod tests {
     }
 
     #[test]
-    fn test_get_player_coordinat() {
+    fn test_get_player_position() {
         let initial_player_position = Vec2::new(1.2, 3.4);
         let initial_player_scale = Vec2::new(64.0, 32.0);
         let mut app = create_app(initial_player_position, initial_player_scale);
         app.update();
-        assert_eq!(get_player_coordinat(&mut app), initial_player_position);
+        assert_eq!(get_player_position(&mut app), initial_player_position);
     }
 
     #[test]
