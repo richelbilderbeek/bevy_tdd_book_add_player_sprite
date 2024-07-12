@@ -5,7 +5,7 @@ pub struct Player;
 
 pub fn create_app(initial_player_position: Vec2, initial_player_scale: Vec2) -> App {
     let mut app = App::new();
-    let add_player_fn = move |/* no mut? */ commands: Commands| {
+    let add_player_fn = move |commands: Commands| {
         add_player(commands, initial_player_position, initial_player_scale);
     };
     app.add_systems(Startup, add_player_fn);
@@ -53,11 +53,6 @@ fn get_player_scale(app: &mut App) -> Vec2 {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_empty_app_has_no_players() {
-        let mut app = App::new();
-        assert_eq!(count_n_players(&mut app), 0);
-    }
 
     #[test]
     fn test_can_create_app() {
@@ -66,6 +61,11 @@ mod tests {
         create_app(initial_player_position, initial_player_scale);
     }
 
+    #[test]
+    fn test_empty_app_has_no_players() {
+        let mut app = App::new();
+        assert_eq!(count_n_players(&mut app), 0);
+    }
 
     #[test]
     fn test_create_app_has_a_player() {
@@ -93,4 +93,7 @@ mod tests {
         app.update();
         assert_eq!(get_player_scale(&mut app), initial_player_scale);
     }
+
+
+
 }
