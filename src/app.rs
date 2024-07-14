@@ -20,7 +20,7 @@ fn add_player(mut commands: Commands, initial_player_position: Vec2, initial_pla
         SpriteBundle {
             transform: Transform {
                 translation: Vec2::extend(initial_player_position, 0.0),
-                size: Vec2::extend(initial_player_size, 1.0),
+                scale: Vec2::extend(initial_player_size, 1.0),
                 ..default()
             },
             ..default()
