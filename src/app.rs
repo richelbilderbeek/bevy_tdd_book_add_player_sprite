@@ -3,10 +3,10 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Player;
 
-pub fn create_app(initial_player_position: Vec2, initial_player_scale: Vec2) -> App {
+pub fn create_app(initial_player_position: Vec2, initial_player_size: Vec2) -> App {
     let mut app = App::new();
     let add_player_fn = move |commands: Commands| {
-        add_player(commands, initial_player_position, initial_player_scale);
+        add_player(commands, initial_player_position, initial_player_size);
     };
     app.add_systems(Startup, add_player_fn);
 
@@ -15,12 +15,12 @@ pub fn create_app(initial_player_position: Vec2, initial_player_scale: Vec2) -> 
     app
 }
 
-fn add_player(mut commands: Commands, initial_player_position: Vec2, initial_player_scale: Vec2) {
+fn add_player(mut commands: Commands, initial_player_position: Vec2, initial_player_size: Vec2) {
     commands.spawn((
         SpriteBundle {
             transform: Transform {
                 translation: Vec2::extend(initial_player_position, 0.0),
-                scale: Vec2::extend(initial_player_scale, 1.0),
+                size: Vec2::extend(initial_player_size, 1.0),
                 ..default()
             },
             ..default()
@@ -49,7 +49,7 @@ fn get_player_position(app: &mut App) -> Vec2 {
 fn get_player_size(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
-    transform.scale.xy()
+    transform.size.xy()
 }
 
 #[cfg(test)]
@@ -60,8 +60,8 @@ mod tests {
     #[test]
     fn test_can_create_app() {
         let initial_player_position = Vec2::new(0.0, 0.0);
-        let initial_player_scale = Vec2::new(64.0, 32.0);
-        create_app(initial_player_position, initial_player_scale);
+        let initial_player_size = Vec2::new(64.0, 32.0);
+        create_app(initial_player_position, initial_player_size);
     }
 
     #[test]
@@ -73,8 +73,8 @@ mod tests {
     #[test]
     fn test_create_app_has_a_player() {
         let initial_player_position = Vec2::new(0.0, 0.0);
-        let initial_player_scale = Vec2::new(64.0, 32.0);
-        let mut app = create_app(initial_player_position, initial_player_scale);
+        let initial_player_size = Vec2::new(64.0, 32.0);
+        let mut app = create_app(initial_player_position, initial_player_size);
         app.update();
         assert_eq!(count_n_players(&mut app), 1);
     }
@@ -82,19 +82,19 @@ mod tests {
     #[test]
     fn test_get_player_position() {
         let initial_player_position = Vec2::new(1.2, 3.4);
-        let initial_player_scale = Vec2::new(64.0, 32.0);
-        let mut app = create_app(initial_player_position, initial_player_scale);
+        let initial_player_size = Vec2::new(64.0, 32.0);
+        let mut app = create_app(initial_player_position, initial_player_size);
         app.update();
         assert_eq!(get_player_position(&mut app), initial_player_position);
     }
 
     #[test]
-    fn test_player_has_a_custom_scale() {
+    fn test_player_has_a_custom_size() {
         let initial_player_position = Vec2::new(1.2, 3.4);
-        let initial_player_scale = Vec2::new(64.0, 32.0);
-        let mut app = create_app(initial_player_position, initial_player_scale);
+        let initial_player_size = Vec2::new(64.0, 32.0);
+        let mut app = create_app(initial_player_position, initial_player_size);
         app.update();
-        assert_eq!(get_player_size(&mut app), initial_player_scale);
+        assert_eq!(get_player_size(&mut app), initial_player_size);
     }
 
 
