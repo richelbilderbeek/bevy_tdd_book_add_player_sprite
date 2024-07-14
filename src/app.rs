@@ -37,6 +37,9 @@ fn count_n_players(app: &mut App) -> usize {
 
 #[cfg(test)]
 fn get_player_position(app: &mut App) -> Vec2 {
+    // Do 'app.update()' before calling this function,
+    // else this assert goes off.
+    assert_eq!(count_n_players(app), 1);
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
     transform.translation.xy()
