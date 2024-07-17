@@ -56,7 +56,6 @@ fn get_player_size(app: &mut App) -> Vec2 {
 mod tests {
     use super::*;
 
-
     #[test]
     fn test_can_create_app() {
         let initial_player_position = Vec2::new(0.0, 0.0);
@@ -96,7 +95,4 @@ mod tests {
         app.update();
         assert_eq!(get_player_size(&mut app), initial_player_size);
     }
-
-
-
 }
