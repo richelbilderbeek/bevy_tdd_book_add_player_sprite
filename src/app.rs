@@ -31,7 +31,7 @@ fn add_player(mut commands: Commands, initial_player_position: Vec2, initial_pla
 
 #[cfg(test)]
 fn count_n_players(app: &mut App) -> usize {
-    let mut query = app.world_mut().query::<(&Transform, &Player)>();
+    let mut query = app.world_mut().query::<&Player>();
     return query.iter(app.world_mut()).len();
 }
 
@@ -42,6 +42,7 @@ fn get_player_position(app: &mut App) -> Vec2 {
     assert_eq!(count_n_players(app), 1);
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
+    assert_eq!(transform.translation.z, 0.0); // 2D
     transform.translation.xy()
 }
 
@@ -49,6 +50,7 @@ fn get_player_position(app: &mut App) -> Vec2 {
 fn get_player_size(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
+    assert_eq!(transform.scale.z, 1.0); // 2D
     transform.scale.xy()
 }
 
