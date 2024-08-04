@@ -9,9 +9,7 @@ pub fn create_app(initial_player_position: Vec2, initial_player_size: Vec2) -> A
         add_player(commands, initial_player_position, initial_player_size);
     };
     app.add_systems(Startup, add_player_fn);
-
-    // Do not do update, as this will disallow to do more steps
-    // app.update(); //Don't!
+    app.update();
     app
 }
 
@@ -68,6 +66,7 @@ mod tests {
     #[test]
     fn test_empty_app_has_no_players() {
         let mut app = App::new();
+        app.update();
         assert_eq!(count_n_players(&mut app), 0);
     }
 
@@ -76,7 +75,6 @@ mod tests {
         let initial_player_position = Vec2::new(0.0, 0.0);
         let initial_player_size = Vec2::new(64.0, 32.0);
         let mut app = create_app(initial_player_position, initial_player_size);
-        app.update();
         assert_eq!(count_n_players(&mut app), 1);
     }
 
@@ -85,7 +83,6 @@ mod tests {
         let initial_player_position = Vec2::new(1.2, 3.4);
         let initial_player_size = Vec2::new(64.0, 32.0);
         let mut app = create_app(initial_player_position, initial_player_size);
-        app.update();
         assert_eq!(get_player_position(&mut app), initial_player_position);
     }
 
@@ -94,7 +91,6 @@ mod tests {
         let initial_player_position = Vec2::new(1.2, 3.4);
         let initial_player_size = Vec2::new(64.0, 32.0);
         let mut app = create_app(initial_player_position, initial_player_size);
-        app.update();
         assert_eq!(get_player_size(&mut app), initial_player_size);
     }
 }
