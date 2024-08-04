@@ -30,7 +30,7 @@ fn add_player(mut commands: Commands, initial_player_position: Vec2, initial_pla
 #[cfg(test)]
 fn count_n_players(app: &mut App) -> usize {
     let mut query = app.world_mut().query::<&Player>();
-    return query.iter(app.world_mut()).len();
+    return query.iter(app.world()).len();
 }
 
 #[cfg(test)]
