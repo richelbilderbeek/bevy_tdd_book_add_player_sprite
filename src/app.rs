@@ -15,7 +15,7 @@ pub fn create_app(initial_player_position: Vec2, initial_player_size: Vec2) -> A
 
 fn add_player(mut commands: Commands, initial_player_position: Vec2, initial_player_size: Vec2) {
     commands.spawn((
-        SpriteBundle {
+        Sprite {
             transform: Transform {
                 translation: Vec2::extend(initial_player_position, 0.0),
                 scale: Vec2::extend(initial_player_size, 1.0),
